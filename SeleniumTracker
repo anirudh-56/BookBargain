@@ -1,0 +1,26 @@
+from selenium import webdriver
+from bs4 import BeautifulSoup
+
+# Set up the Selenium webdriver
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')  # Run Chrome in headless mode
+driver = webdriver.Chrome(options=options)
+
+bookTitle = input("Enter the name of the book and author: ")
+bookTitle.replace(" ", "%20")
+abeBooks = "https://www.abebooks.com/servlet/SearchResults?kn=" + bookTitle + "&sts=t&cm_sp=SearchF-_-TopNavISS-_-Results"
+driver.get(abeBooks)
+
+# Get the fully rendered page source
+page_source = driver.page_source
+
+# Close the Selenium webdriver
+driver.quit()
+
+# Parse the page source with BeautifulSoup
+soup = BeautifulSoup(page_source, 'lxml')
+listings = soup.find_all('div', class_="result-set col-xs-9")
+
+prices = []
+for item in listings:
+    print(item.text)
